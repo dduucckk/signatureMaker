@@ -1,0 +1,237 @@
+
+<!doctype html>
+<html>
+<!-- Написал И. Матвеев. -->
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Генератор подписей для почты сотрудников SSA</title>
+		<script src="src/jquery.min.js"></script>
+		<script src="src/jquery.mask.js"></script>
+		<script src="src/FileSaver.js"></script>
+    	<script>
+        	$( document ).ready(function() {
+        	$('.phone_ru').mask('+7 (000) 000 00 00');
+      		$("#submitbutton").click(function(e){
+						//alert ("Скопируйте и сохраните сгенерированный текст как файл .htm");
+
+
+						firmname = "DMTRVK";
+						firmurl = "https://dmtrvk.ru/";
+						firmurlwithouthttps = "dmtrvk.ru";
+
+						firmaddress = "100000 Москва, Красная площадь, д. 1, офис 6";
+						firmtelephone = "+7 (495) 777 7777";
+
+						bullshitinrussian = "Информация в данном письме может содержать конфиденциальные данные. Если Вы получили это письмо по ошибке, пожалуйста, сообщите об этом отправителю и удалите. Несанкционированное распространение, печать, пересылка и копирование запрещены.";
+
+						bullshitinenglish = "Information contained in this e-mail may be privileged and/or confidential. If you are not the intended recipient, please delete and notify sender. Unauthorised disclosure, printing, forwarding or copying is prohibited."
+
+
+						// LOGO 1:1 in Base64:
+						data = "data:image/jpeg;base64,"+
+						"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";
+
+
+
+
+
+						name = $("#name").val();
+						surname = $("#surname").val();
+						position = $("#position").val();
+						cellnumber = $("#cellnumber").val();
+						emailaddress = $("#emailaddress").val();
+
+						if (!(name && surname && position)) {
+							alert ("Заполните все обязательные поля!")
+							return;
+						}
+
+						if (cellnumber!="") {
+							cellnumber += " &lt;br/&gt;"; 
+						}
+						
+						//alert (cellnumber)
+						generated="&lt;html &gt; &lt;head&gt; &lt;/head&gt; &lt;body&gt; &lt;style&gt;a{ }&lt;/style&gt; &lt;div style=&quot; font-family: 'Arial', sans-serif !important; min-width: 450px;&quot;&gt; &lt;div style=&quot;font-size:15px;&quot;&gt;С уважением,&lt;br/&gt; "+name+"&nbsp;"+surname+"&lt;/div&gt; &lt;div style=&quot;font-size:13px;&quot;&gt;"+position+"&lt;/div&gt;&lt;br/&gt; &lt;div id=&quot;leftflt&quot; style=&quot;float:left; margin-right:20px;&quot;&gt;&lt;a href=&quot;"+firmurl+"&quot;&gt;"+
+						// LOGO: 
+						"&lt;img alt=&quot;"+firmname+"&quot; title=&quot;"+firmname+"&quot; src=&quot;data:"+data+"&quot; &gt;"+
+						" &lt;/a&gt;&lt;/div&gt; &lt;div id=&quot;rightflt&quot; style=&quot;font-size:12px; padding-top: 10px;&quot;&gt; "+cellnumber+" &lt;a href=&quot;mailto:"+emailaddress+"&quot;&gt;"+emailaddress+"&lt;/a&gt; &lt;br/&gt; "+firmtelephone+"&lt;br/&gt; "+firmaddress+" &lt;br/&gt; &lt;a href=&quot;"+firmurl+"&quot;&gt;"+firmurlwithouthttps+"&lt;/a&gt; &lt;/div&gt;&lt;br/&gt; &lt;hr/&gt; &lt;div style=&quot;font-size:11px;&quot;&gt; "+bullshitinrussian+"&lt;br/&gt; "+bullshitinenglish+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/div&gt; &lt;/div&gt; &lt;/body&gt; &lt;/html&gt;";
+			
+						//$("#text01").val($generated);
+
+						//document.write (generated);
+
+						/*var frog = window.open("","savemewindow","width=300,height=300,top=100,left=300,location=1,status=1,scrollbars=1,resizable=1,toolbar=1,menubar=1")
+						frog.document.open();
+						frog.document.write(generated);
+						frog.document.close();*/
+
+						function decodeHtml(str)
+						{
+						    var map =
+						    {
+						        '&amp;': '&',
+						        '&lt;': '<',
+						        '&gt;': '>',
+						        '&quot;': '"',
+						        '&#039;': "'"
+						    };
+						    return str.replace(/&amp;|&lt;|&gt;|&quot;|&#039;/g, function(m) {return map[m];});
+						}
+												
+
+						var blob = new Blob([decodeHtml(generated)], {type: "text/plain;charset=utf-8"});
+
+						window.saveAs(blob, "подпись_"+surname+".htm");
+
+
+						});
+			});
+        </script>
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+		<style type="text/css">
+			.form-style-6{
+			    font: 95% Arial, Helvetica, sans-serif;
+			    max-width: 400px;
+			    margin: 10px auto;
+			    padding: 16px;
+			    background: #F7F7F7;
+			}
+
+
+			::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+			    color: #ddd;
+			    opacity: 1; /* Firefox */
+			}
+
+			:-ms-input-placeholder { /* Internet Explorer 10-11 */
+			    color: #ddd;
+			}
+
+			::-ms-input-placeholder { /* Microsoft Edge */
+			    color: #ddd;
+			}
+
+			.form-style-6 h1{
+			    background: #43D1AF;
+			    padding: 20px 0;
+			    font-size: 140%;
+			    font-weight: 300;
+			    text-align: center;
+			    color: #fff;
+			    margin: -16px -16px 16px -16px;
+			}
+			.form-style-6 input[type="tel"],
+			.form-style-6 input[type="text"],
+			.form-style-6 input[type="date"],
+			.form-style-6 input[type="datetime"],
+			.form-style-6 input[type="email"],
+			.form-style-6 input[type="number"],
+			.form-style-6 input[type="search"],
+			.form-style-6 input[type="time"],
+			.form-style-6 input[type="url"],
+			.form-style-6 textarea,
+			.form-style-6 select 
+			{
+			    -webkit-transition: all 0.30s ease-in-out;
+			    -moz-transition: all 0.30s ease-in-out;
+			    -ms-transition: all 0.30s ease-in-out;
+			    -o-transition: all 0.30s ease-in-out;
+			    outline: none;
+			    box-sizing: border-box;
+			    -webkit-box-sizing: border-box;
+			    -moz-box-sizing: border-box;
+			    width: 100%;
+			    background: #fff;
+			    margin-bottom: 4%;
+			    border: 1px solid #ccc;
+			    padding: 3%;
+			    color: #555;
+			    font: 95% Arial, Helvetica, sans-serif;
+			}
+			.form-style-6 input[type="tel"]:focus,
+			.form-style-6 input[type="text"]:focus,
+			.form-style-6 input[type="date"]:focus,
+			.form-style-6 input[type="datetime"]:focus,
+			.form-style-6 input[type="email"]:focus,
+			.form-style-6 input[type="number"]:focus,
+			.form-style-6 input[type="search"]:focus,
+			.form-style-6 input[type="time"]:focus,
+			.form-style-6 input[type="url"]:focus,
+			.form-style-6 textarea:focus,
+			.form-style-6 select:focus
+			{
+			    box-shadow: 0 0 5px #000;
+			    padding: 3%;
+			    border: 1px solid #000;
+			}
+
+			.form-style-6 input[type="submit"],
+			.form-style-6 input[type="button"]{
+			    box-sizing: border-box;
+			    -webkit-box-sizing: border-box;
+			    -moz-box-sizing: border-box;
+			    width: 100%;
+			    padding: 3%;
+			    background: #000;
+			    border-bottom: 4px solid #ccc;
+			    border-top-style: none;
+			    border-right-style: none;
+			    border-left-style: none;    
+			    color: #fff;
+			}
+			.form-style-6 input[type="submit"]:hover,
+			.form-style-6 input[type="button"]:hover{
+			    background: #000;
+			    border-bottom: 4px solid #aaa;
+			    cursor:pointer;
+			}
+			.form-style-6 input[type="submit"]:active,
+			.form-style-6 input[type="button"]:active{
+			    background: #fff;
+			    color: #000;
+			    border-bottom: 4px solid #000;
+			    cursor:pointer;
+			}
+		</style>
+    </head>
+    <body>
+    	<div class="form-style-6">
+		<form id="text">
+			<p>
+				<p>
+					Имя:* <input type="text" name="name" id="name" placeholder="Имя" />
+				</p>
+				<p>
+					Фамилия:* <input type="text" name="surname" id="surname" placeholder="Фамилия" />
+				</p>
+				<p>
+					Должность:* <input type="text" name="position" id="position" placeholder="должность" />
+				</p>
+				<p>
+					Мобильный телефон: <input type="tel" name="tel" class="phone_ru" name="cellnumber" id="cellnumber" placeholder="+7 (916) 123 45 67" />
+					<i><small>Если вы не хотите указывать свой мобильный телефон, оставьте это поле пустым.</small></i>
+				</p>
+				<p>
+					E-mail: <input type="text" name="emailaddress" id="emailaddress" placeholder="mail@mail.ru" value="mail@mail.ru" />
+				</p>
+
+				<!--<p>
+					Показывать мобильный телефон:<br/>
+					<input type="radio" id="showcell" name="showcell" value="show" checked="checked" />Да<br>
+					<input type="radio" id="hidecell" name="showcell" value="hide" />Нет<br>
+				</p>-->
+			</p>
+
+			<!--<p> <textarea rows="12" cols="60" name="text01" id="text01" placeholder="Комментарий" 
+					      required for="text"></textarea> </p> -->
+      		<input id="submitbutton" name="submitbutton" type="button" value="Сгенерировать" form="text">
+		</form>
+		<p>
+			<i><small>Если обнаружите какие-то ошибки, или у вас есть какие-то предложения по работе формы, пишите: <a href="mailto:dmtrvk@dmtrvk.ru">dmtrvk@dmtrvk.ru</a>.</small></i>
+		</p>
+	</div>
+		
+    </body>
+</html>
